@@ -1,0 +1,4 @@
+node_modules/*
+*.parquet
+package-lock.json
+dist/*
