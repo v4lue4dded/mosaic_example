@@ -1,10 +1,25 @@
+console.log("entered index.js");
 import * as vg from '@uwdata/vgplot';
-        
-async function loadData() {
-    await vg.coordinator().exec([
-        `CREATE TEMP TABLE IF NOT EXISTS flights10m AS SELECT GREATEST(-60, LEAST(ARR_DELAY, 180))::DOUBLE AS delay, DISTANCE AS distance, DEP_TIME AS time FROM './flights-10m.parquet'`
-    ]);
+console.log("imported vgplot");
 
+async function loadData() {
+    console.log("entered loadData");
+    try {
+        await vg.coordinator().exec([
+            `
+            CREATE TEMP TABLE IF NOT EXISTS flights10m AS 
+            SELECT 
+                GREATEST(-60, LEAST(ARR_DELAY, 180))::DOUBLE AS delay,
+                DISTANCE AS distance,
+                DEP_TIME AS time 
+            FROM 'flights-10m.parquet'
+            `
+        ]);
+        console.log("created temp table");
+    } catch (error) {
+        console.error("Error creating temp table:", error);
+    }
+    
     const $brush = vg.Selection.crossfilter();
 
     document.body.appendChild(
@@ -47,3 +62,4 @@ async function loadData() {
 }
 
 loadData().catch(console.error);
+console.log("exited index.js");
